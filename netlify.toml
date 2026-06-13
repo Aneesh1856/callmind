@@ -1,0 +1,11 @@
+[build]
+  base = "dashboard"
+  publish = "dist"
+  command = "npm run build"
+
+# This tells Netlify to redirect all 404s to index.html 
+# (required for React Router to work correctly on direct link sharing)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

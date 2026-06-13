@@ -81,7 +81,8 @@ async def list_calls(
 @router.get("/status", response_model=StatusOut)
 async def get_status(session: AsyncSession = Depends(get_session)):
     """Return ARIA's current operational status."""
-    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    # Use utcnow() instead of now(timezone.utc) to match the offset-naive TIMESTAMP column
+    today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
 
     count_today_query = select(func.count()).where(
         CallRecord.started_at >= today_start

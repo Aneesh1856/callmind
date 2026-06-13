@@ -147,7 +147,7 @@ async def call_status(
             record = result.first()
             if record and record.status == "RINGING":
                 record.status = "FAILED"
-                record.ended_at = datetime.now(timezone.utc)
+                record.ended_at = datetime.utcnow()
                 await db_session.commit()
 
     return {"status": "ok"}
@@ -162,7 +162,7 @@ async def _create_call_record(call_sid: str, caller_number: str, to_number: str)
             call_sid=call_sid,
             caller_number=caller_number,
             status="RINGING",
-            started_at=datetime.now(timezone.utc),
+            started_at=datetime.utcnow(),
         )
         session.add(record)
         await session.commit()

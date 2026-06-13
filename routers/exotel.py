@@ -114,10 +114,18 @@ async def voicebot_call(
     # Persist initial call record to DB in the background
     background_tasks.add_task(_create_call_record, call_sid, caller, callee)
 
-    base = settings.base_url.rstrip("/")
-    ws_base = base.replace("https://", "wss://").replace("http://", "ws://")
-    ws_url = f"{ws_base}/ws/call/{call_sid}"
-    logger.debug("Returning Voicebot URL: %s", ws_url)
+    # Dynamically build WebSocket URL using the incoming request's hostname
+    # This prevents errors if the user forgets to set BASE_URL in the environment
+    scheme = "wss" if request.url.scheme in ("https", "wss") else "ws"
+    
+    # In some hosting environments, request.url.scheme might be http due to proxies,
+    # so we enforce wss if the netloc is onrender.com
+    if "onrender.com" in request.url.netloc:
+        scheme = "wss"
+        
+    ws_url = f"{scheme}://{request.url.netloc}/ws/call/{call_sid}"
+    
+    logger.info("Returning Voicebot URL: %s", ws_url)
     return {"url": ws_url}
 
 

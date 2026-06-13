@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #07070A;
+  --color-bg-card: #0E0D14;
+  --color-bg-card-hover: #13111B;
+  --color-bg-header: #0A0912;
+  --color-accent: #E23E45;
+  --color-accent-bright: #FF4D55;
+  --color-accent-glow: #D9383A;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94909f;
+  --color-text-muted: #4e4a5a;
+  --color-border: #1E1B27;
+  --color-border-accent: #E23E4540;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 100%;
+  }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #07070A;
+    color: #f1f5f9;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(226, 62, 69, 0.3);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(226, 62, 69, 0.6);
+  }
+}
+
+@layer utilities {
+
+  /* ── Glassmorphism panels ───────────────────────────── */
+  .glass-panel {
+    background: rgba(14, 13, 20, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.045);
+  }
+
+  .glass-panel-hover {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-panel-hover:hover {
+    background: rgba(20, 18, 30, 0.88);
+    border-color: rgba(226, 62, 69, 0.22);
+    box-shadow:
+      0 20px 40px -12px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(226, 62, 69, 0.08),
+      0 4px 6px -4px rgba(226, 62, 69, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .glass-panel-active {
+    background: rgba(22, 18, 30, 0.92);
+    border-color: rgba(226, 62, 69, 0.38);
+    box-shadow:
+      0 0 0 1px rgba(226, 62, 69, 0.12),
+      0 20px 40px -12px rgba(226, 62, 69, 0.15),
+      inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  /* ── Card shadows ───────────────────────────────────── */
+  .card-shadow {
+    box-shadow: 0 4px 24px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.4);
+  }
+
+  /* ── Toggle ─────────────────────────────────────────── */
+  .toggle-shadow-on {
+    box-shadow:
+      0 0 35px rgba(226, 62, 69, 0.55),
+      0 0 70px rgba(226, 62, 69, 0.18),
+      inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+  .toggle-shadow-off {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  /* ── Glows ──────────────────────────────────────────── */
+  .glow-red {
+    box-shadow: 0 0 30px rgba(226, 62, 69, 0.25), 0 0 60px rgba(226, 62, 69, 0.1);
+  }
+  .glow-green {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  }
+
+  /* ── Sound wave ─────────────────────────────────────── */
+  @keyframes wavePulse {
+    0%, 100% { transform: scaleY(0.25); opacity: 0.5; }
+    50%       { transform: scaleY(1);   opacity: 1; }
+  }
+  .animate-wave-1 { animation: wavePulse 1.0s ease-in-out infinite; }
+  .animate-wave-2 { animation: wavePulse 1.3s ease-in-out infinite 0.15s; }
+  .animate-wave-3 { animation: wavePulse 0.9s ease-in-out infinite 0.3s; }
+  .animate-wave-4 { animation: wavePulse 1.2s ease-in-out infinite 0.45s; }
+  .animate-wave-5 { animation: wavePulse 1.1s ease-in-out infinite 0.2s; }
+  .animate-wave-6 { animation: wavePulse 0.8s ease-in-out infinite 0.35s; }
+
+  /* ── Fade in ────────────────────────────────────────── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn { animation: fadeIn 0.35s ease-out forwards; }
+
+  /* ── Slide up (toast) ───────────────────────────────── */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  /* ── Shine shimmer for stat cards ───────────────────── */
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+  }
+
+  /* ── Subtle breathe glow ────────────────────────────── */
+  @keyframes breathe {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50%       { opacity: 1;   transform: scale(1.03); }
+  }
+  .animate-breathe { animation: breathe 3s ease-in-out infinite; }
+
+  /* ── Mono font helper ───────────────────────────────── */
+  .font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  /* ── Stat number gradient ───────────────────────────── */
+  .stat-number {
+    background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Gradient text ──────────────────────────────────── */
+  .gradient-text {
+    background: linear-gradient(135deg, #E23E45 0%, #FF6B6B 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Active call pulse ring ─────────────────────────── */
+  @keyframes ringPulse {
+    0%   { box-shadow: 0 0 0 0   rgba(226, 62, 69, 0.5); }
+    70%  { box-shadow: 0 0 0 10px rgba(226, 62, 69, 0);   }
+    100% { box-shadow: 0 0 0 0   rgba(226, 62, 69, 0);   }
+  }
+  .animate-ring { animation: ringPulse 1.8s ease-out infinite; }
+}

@@ -1,0 +1,65 @@
+# render.yaml — Render deployment configuration
+# Docs: https://render.com/docs/yaml-spec
+#
+# This file auto-configures your backend + database when you connect
+# your GitHub repo to Render. Just push to GitHub and import on Render.
+
+services:
+  # ── FastAPI Backend ───────────────────────────────────────────────────────────
+  - type: web
+    name: callmind-backend
+    runtime: python
+    region: singapore           # Closest to India
+    plan: free
+
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+
+    # Health check — Render pings this to confirm the service is up
+    healthCheckPath: /health
+
+    envVars:
+      # Auto-injected by Render from the database below — do not edit
+      - key: DATABASE_URL
+        fromDatabase:
+          name: callmind-db
+          property: connectionString
+
+      # ── Paste your real values in the Render dashboard → Environment tab ──
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: DEEPGRAM_API_KEY
+        sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: ELEVENLABS_VOICE_ID
+        sync: false
+      - key: EXOTEL_API_KEY
+        sync: false
+      - key: EXOTEL_API_TOKEN
+        sync: false
+      - key: EXOTEL_SID
+        sync: false
+      - key: EXOTEL_CALLER_ID
+        sync: false
+      - key: EXOTEL_SUBDOMAIN
+        value: api.exotel.com
+      - key: WHATSAPP_TO_NUMBER
+        sync: false
+      - key: WHITELISTED_NUMBERS
+        sync: false
+      - key: ARIA_OWNER_NAME
+        value: Aneesh
+      - key: ARIA_ENABLED
+        value: "true"
+      # Set BASE_URL to your Render service URL after first deploy, e.g.:
+      # https://callmind-backend.onrender.com
+      - key: BASE_URL
+        sync: false
+
+# ── Free PostgreSQL Database ──────────────────────────────────────────────────
+databases:
+  - name: callmind-db
+    databaseName: callmind
+    plan: free                  # 1 GB storage, 90 days free
+    region: singapore

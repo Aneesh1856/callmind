@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+*.env
+
+# Database
+*.db
+*.sqlite
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Extracted PDF text
+aria_prompts_extracted.txt
+
+# Logs
+*.log
+logs/
+
+# Node / Frontend
+node_modules/
+dashboard/dist/
+dashboard/node_modules/
+
+# Test / scratch files
+*.mp3
+seed_test_data.py
+test_*.py

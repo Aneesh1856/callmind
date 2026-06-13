@@ -1,0 +1,16 @@
+fastapi==0.115.12
+uvicorn[standard]==0.34.3
+python-dotenv==1.0.1
+httpx==0.27.0
+websockets==12.0
+groq>=1.4.0
+deepgram-sdk==3.4.0
+elevenlabs>=1.5.0
+sqlmodel==0.0.22
+aiosqlite==0.20.0          # SQLite async driver (local dev)
+asyncpg>=0.29.0            # PostgreSQL async driver (production)
+psycopg2-binary>=2.9.9     # PostgreSQL sync driver (seed script)
+python-multipart==0.0.9
+pydantic>=2.10.0
+pydantic-settings>=2.6.0
+aiofiles==23.2.1

@@ -148,11 +148,17 @@ async def call_websocket(websocket: WebSocket, call_sid: str):
                 )
 
                 intent_str: str = intent or "OTHER"
-                urgency_str: str = urgency_data.get("urgency", "LOW")
+                urgency_str: str = urgency_data.get("urgency", "LOW").upper()
                 escalate_now: bool = urgency_data.get("escalate_now", False)
 
                 session.intent = intent_str
-                session.urgency = urgency_str
+                
+                # Only upgrade urgency, never downgrade it during the call
+                levels = {"LOW": 0, "MEDIUM": 1, "HIGH": 2, "URGENT": 2, "CRITICAL": 3}
+                curr_level = levels.get((session.urgency or "LOW").upper(), 0)
+                new_level = levels.get(urgency_str, 0)
+                if new_level > curr_level:
+                    session.urgency = urgency_str
 
                 # ── Spam check ─────────────────────────────────────────────
                 if spam.get("is_spam") and spam.get("confidence", 0) > 0.7:

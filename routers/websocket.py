@@ -71,7 +71,7 @@ async def call_websocket(websocket: WebSocket, call_sid: str):
         session = CallSession(call_sid=call_sid, caller_number="unknown")
         app_state.add_call(session)
 
-    started_at = datetime.now(timezone.utc)
+    started_at = datetime.utcnow()
     stream_sid: Optional[str] = None
     full_transcript_lines: list[str] = []
 
@@ -293,7 +293,7 @@ async def call_websocket(websocket: WebSocket, call_sid: str):
             process_task.cancel()
 
     # ── Post-call cleanup ─────────────────────────────────────────────────────
-    ended_at = datetime.now(timezone.utc)
+    ended_at = datetime.utcnow()
     app_state.remove_call(call_sid)
 
     full_transcript = "\n".join(full_transcript_lines)

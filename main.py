@@ -84,7 +84,7 @@ app.include_router(twilio.router)
 
 # ── Health check ──────────────────────────────────────────────────────────────
 
-@app.get("/health", tags=["health"])
+@app.api_route("/health", methods=["GET", "POST", "HEAD", "OPTIONS"], tags=["health"])
 async def health():
     return {
         "status": "ok",

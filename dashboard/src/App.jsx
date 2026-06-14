@@ -671,7 +671,20 @@ function CallCard({ call, isExpanded, onToggle }) {
           </div>
 
           <div className="flex flex-col items-end gap-2 flex-shrink-0">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-600">{timeAgo(call.created_at)}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-600">{timeAgo(call.created_at)}</p>
+              {call.onDelete && (
+                <button
+                  onClick={e => { e.stopPropagation(); call.onDelete(call.id) }}
+                  className="w-6 h-6 rounded-md flex items-center justify-center text-slate-700 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200"
+                  title="Delete this call"
+                >
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M5 12h14"/>
+                  </svg>
+                </button>
+              )}
+            </div>
             <div className="flex items-center gap-1.5">
               <span className="text-[11px] font-mono text-slate-500 px-1.5 py-0.5 rounded"
                 style={{ background: 'rgba(20,18,28,0.8)', border: '1px solid rgba(255,255,255,0.05)' }}>
@@ -818,7 +831,7 @@ function CallCard({ call, isExpanded, onToggle }) {
 }
 
 // ─── Call History Feed ─────────────────────────────────────────────────────────
-function CallHistoryFeed({ calls, loading, error, total }) {
+function CallHistoryFeed({ calls, loading, error, total, onDeleteCall }) {
   const [expandedId, setExpandedId] = useState(null)
 
   function handleToggle(id) {
@@ -880,7 +893,7 @@ function CallHistoryFeed({ calls, loading, error, total }) {
         {calls.map(call => (
           <CallCard
             key={call.id}
-            call={call}
+            call={{...call, onDelete: onDeleteCall}}
             isExpanded={expandedId === call.id}
             onToggle={() => handleToggle(call.id)}
           />
@@ -988,6 +1001,39 @@ export default function App() {
     }
   }
 
+  // Secret: delete a single call by ID
+  async function handleDeleteCall(callId) {
+    try {
+      await api.delete(`/calls/${callId}?key=aria-admin-2026`)
+      setCallsData(prev => ({
+        ...prev,
+        total: prev.total - 1,
+        calls: prev.calls.filter(c => c.id !== callId),
+      }))
+      setToast({ message: 'Call deleted', type: 'success' })
+    } catch (err) {
+      setToast({ message: 'Failed to delete', type: 'error' })
+    }
+  }
+
+  // Secret: Ctrl+Shift+K to bulk-delete empty/failed calls
+  useEffect(() => {
+    async function handleSecretKey(e) {
+      if (e.ctrlKey && e.shiftKey && e.key === 'K') {
+        e.preventDefault()
+        try {
+          const res = await api.delete('/calls?key=aria-admin-2026')
+          setToast({ message: `Cleaned ${res.data.count} empty log(s)`, type: 'success' })
+          fetchCalls()
+        } catch (err) {
+          setToast({ message: 'Failed to clean logs', type: 'error' })
+        }
+      }
+    }
+    window.addEventListener('keydown', handleSecretKey)
+    return () => window.removeEventListener('keydown', handleSecretKey)
+  }, [fetchCalls])
+
   useEffect(() => {
     fetchStatus(); fetchCalls(); fetchContext()
     const s = setInterval(fetchStatus, 3000)
@@ -1044,6 +1090,7 @@ export default function App() {
               loading={callsLoading}
               error={callsError}
               total={callsData.total}
+              onDeleteCall={handleDeleteCall}
             />
           </div>
 

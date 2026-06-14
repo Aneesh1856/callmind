@@ -137,3 +137,54 @@ async def update_context(body: ContextIn):
         context=body.context,
         message="Context updated successfully.",
     )
+
+
+# ── DELETE /calls/{call_id} ──────────────────────────────────────────────────
+
+@router.delete("/calls/{call_id}")
+async def delete_call(
+    call_id: int,
+    key: str = Query(..., description="Admin key"),
+    session: AsyncSession = Depends(get_session),
+):
+    """Delete a single call record by ID. Requires admin key."""
+    if key != settings.admin_secret:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    result = await session.exec(
+        select(CallRecord).where(CallRecord.id == call_id)
+    )
+    record = result.first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Call not found")
+
+    await session.delete(record)
+    await session.commit()
+    return {"status": "deleted", "id": call_id}
+
+
+# ── DELETE /calls (bulk) ─────────────────────────────────────────────────────
+
+@router.delete("/calls")
+async def delete_empty_calls(
+    key: str = Query(..., description="Admin key"),
+    session: AsyncSession = Depends(get_session),
+):
+    """Delete all calls with no transcript (failed/ringing)."""
+    if key != settings.admin_secret:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    result = await session.exec(
+        select(CallRecord).where(
+            (CallRecord.transcript == None) |  # noqa: E711
+            (CallRecord.transcript == "") |
+            (CallRecord.status == "FAILED") |
+            (CallRecord.status == "RINGING")
+        )
+    )
+    records = result.all()
+    for r in records:
+        await session.delete(r)
+    await session.commit()
+    return {"status": "deleted", "count": len(records)}
+

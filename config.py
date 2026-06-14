@@ -62,6 +62,7 @@ class Settings(BaseSettings):
 
     # ── Security ───────────────────────────────────────────────────────────
     whitelisted_numbers: str = ""
+    admin_secret: str = "aria-admin-2026"  # Secret key for admin operations
 
     @property
     def whitelist(self) -> List[str]:

@@ -84,10 +84,10 @@ React Dashboard (live update)
 
 ## Live Demo
 
-📞 **Call the agent directly:** `[Insert Exotel number here]`
+📞 **Call the agent directly:** `+918618796251`
 Speak naturally in English or Hinglish — ask for a callback, state your purpose, or just see how it handles a spam attempt.
 
-🖥️ **Dashboard:** `[Insert deployed URL here]`
+🖥️ **Dashboard:** `https://aria-callmind.netlify.app`
 Watch the call feed, transcripts, and AI summaries update in real time.
 
 🤖 **ARIA Simulation:** Navigate to `/demo` on the dashboard to see the future vision in action.
@@ -152,10 +152,10 @@ EXOTEL_SUBDOMAIN=api.exotel.com
 
 Built at FAR AWAY 2026 by:
 
-- **Aneesh** — Backend, AI pipeline, telephony integration
-- **Poojitha** — Frontend, dashboard, ARIA simulation
+- **Aneesh**[Amity University Bengaluru, India] — Backend, AI pipeline, telephony integration
+- **Poojitha**[Dayananda Sagar University, India] — Frontend, ARIA simulation
 
-[College Name] | Agentic & Autonomous Systems Track
+Agentic & Autonomous Systems Track
 
 ---
 

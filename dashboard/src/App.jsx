@@ -143,7 +143,7 @@ function SoundWave() {
 }
 
 // ─── Header ───────────────────────────────────────────────────────────────────
-function Header({ ariaEnabled, toggling, onToggle }) {
+function Header({ ariaEnabled, toggling, onToggle, onLogoTap }) {
   return (
     <header
       style={{
@@ -170,7 +170,8 @@ function Header({ ariaEnabled, toggling, onToggle }) {
               <img
                 src="/logo.png"
                 alt="CallMinds"
-                className="h-12 w-auto object-contain rounded-xl"
+                className="h-12 w-auto object-contain rounded-xl cursor-pointer"
+                onClick={onLogoTap}
                 style={{
                   filter: ariaEnabled ? 'drop-shadow(0 0 12px rgba(226,62,69,0.5))' : 'none',
                   transition: 'filter 0.5s ease',
@@ -673,7 +674,7 @@ function CallCard({ call, isExpanded, onToggle }) {
           <div className="flex flex-col items-end gap-2 flex-shrink-0">
             <div className="flex items-center gap-2">
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-600">{timeAgo(call.created_at)}</p>
-              {call.onDelete && (
+              {call.adminMode && call.onDelete && (
                 <button
                   onClick={e => { e.stopPropagation(); call.onDelete(call.id) }}
                   className="w-6 h-6 rounded-md flex items-center justify-center text-slate-700 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200"
@@ -831,7 +832,7 @@ function CallCard({ call, isExpanded, onToggle }) {
 }
 
 // ─── Call History Feed ─────────────────────────────────────────────────────────
-function CallHistoryFeed({ calls, loading, error, total, onDeleteCall }) {
+function CallHistoryFeed({ calls, loading, error, total, onDeleteCall, adminMode }) {
   const [expandedId, setExpandedId] = useState(null)
 
   function handleToggle(id) {
@@ -893,7 +894,7 @@ function CallHistoryFeed({ calls, loading, error, total, onDeleteCall }) {
         {calls.map(call => (
           <CallCard
             key={call.id}
-            call={{...call, onDelete: onDeleteCall}}
+            call={{...call, onDelete: onDeleteCall, adminMode}}
             isExpanded={expandedId === call.id}
             onToggle={() => handleToggle(call.id)}
           />
@@ -942,6 +943,24 @@ export default function App() {
   const [contextText, setContextText]     = useState('')
   const [isSavingContext, setIsSavingContext] = useState(false)
   const [toast, setToast]                 = useState(null)
+  const [adminMode, setAdminMode]         = useState(false)
+  const [logoTaps, setLogoTaps]           = useState(0)
+  const logoTapTimer                      = useState(null)
+
+  function handleLogoTap() {
+    setLogoTaps(prev => {
+      const next = prev + 1
+      if (next >= 5) {
+        setAdminMode(am => !am)
+        setToast({ message: !adminMode ? 'Admin mode ON' : 'Admin mode OFF', type: 'success' })
+        return 0
+      }
+      return next
+    })
+    // Reset tap count after 2 seconds of inactivity
+    clearTimeout(logoTapTimer[0])
+    logoTapTimer[0] = setTimeout(() => setLogoTaps(0), 2000)
+  }
 
   const fetchStatus = useCallback(async () => {
     try {
@@ -1059,7 +1078,7 @@ export default function App() {
       </div>
 
       {/* Header */}
-      <Header ariaEnabled={ariaEnabled} toggling={toggling} onToggle={handleToggle} />
+      <Header ariaEnabled={ariaEnabled} toggling={toggling} onToggle={handleToggle} onLogoTap={handleLogoTap} />
 
       {/* Main content */}
       <main className="relative z-10 max-w-[1280px] mx-auto px-5 sm:px-8 py-7">
@@ -1091,6 +1110,7 @@ export default function App() {
               error={callsError}
               total={callsData.total}
               onDeleteCall={handleDeleteCall}
+              adminMode={adminMode}
             />
           </div>
 

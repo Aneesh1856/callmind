@@ -1,8 +1,4 @@
 # CallMind — Autonomous AI Voice Call Agent
-
-> **FAR AWAY 2026 — India's Biggest International Hackathon**
-> Theme: Agentic & Autonomous Systems
-
 ---
 
 ## What is CallMind?
